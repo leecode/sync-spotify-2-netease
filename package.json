@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/hapi": "^20.0.0",
+    "NeteaseCloudMusicApi": "^3.39.0",
+    "node-cache": "^5.1.2",
     "spotify-web-api-node": "^4.0.0"
   }
 }

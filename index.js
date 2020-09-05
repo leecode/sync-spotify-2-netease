@@ -2,8 +2,10 @@
 
 const Hapi = require('@hapi/hapi');
 const SpotifyWebApi = require('spotify-web-api-node');
+const NodeCache = require('node-cache');
 
 const spotifyConfig = require('./config/spotify');
+const nodeCache = new NodeCache();
 
 const spotifyApi = new SpotifyWebApi({
     clientId: spotifyConfig.credentials.clientId,
@@ -28,6 +30,12 @@ const init = async () => {
             plugin: require('./modules/spotify-oauth'),
             options: {
                 spotifyApi
+            }
+        },
+        {
+            plugin: require('./modules/neteasemusic'),
+            options: {
+                nodeCache
             }
         }
     ]);
