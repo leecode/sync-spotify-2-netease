@@ -1,0 +1,15 @@
+{
+  "name": "sync-spotify-2-netease",
+  "version": "1.0.0",
+  "description": "sync spotify playlists to netsease",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lyphist",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^20.0.0",
+    "spotify-web-api-node": "^4.0.0"
+  }
+}
