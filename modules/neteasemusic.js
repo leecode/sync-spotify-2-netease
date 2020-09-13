@@ -3,7 +3,11 @@ const neteaseMusicApiRequest = require('NeteaseCloudMusicApi/util/request');
 const loginCellPhone = require('NeteaseCloudMusicApi/module/login_cellphone');
 const userPlayList = require('NeteaseCloudMusicApi/module/user_playlist');
 const createPlaylist = require('NeteaseCloudMusicApi/module/playlist_create');
-const tools = require('NeteaseCloudMusicApi/util/index')
+const playlistTracks = require('NeteaseCloudMusicApi/module/playlist_tracks');
+const search = require('NeteaseCloudMusicApi/module/search');
+const tools = require('NeteaseCloudMusicApi/util/index');
+
+const netease = require('../lib/netease');
 
 const NETEASE_COOKIE_NAME = 'netease.cookie';
 
@@ -31,10 +35,6 @@ module.exports = {
                 });
 
                 if (resp.status == 200) {
-                    // resp.cookie.reduce((acc, curr) => {
-                    //     acc[curr]
-
-                    // }, {});
                     nodeCache.set(NETEASE_COOKIE_NAME, tools.cookieToJson(resp.cookie.join(';')));
                 }
 
@@ -64,6 +64,7 @@ module.exports = {
         });
         
 
+        
         server.route({
             method: 'GET',
             path: '/netease/playlist/create',
@@ -83,6 +84,61 @@ module.exports = {
                 });
 
                 return reuslt.body;
+            }
+        });
+
+        // test playlist id 5221994866, trackId: 347231
+        server.route({
+            method: 'GET',
+            path: '/netease/playlist/tracks',
+            handler: async (request, h) => {
+                const query = {
+                    op: 'add',
+                    pid: request.query.pid,
+                    tracks: request.query.tracks,
+                    cookie: nodeCache.get(NETEASE_COOKIE_NAME) || {}
+                };
+
+                const result = await new Promise((resolve) => {
+                    playlistTracks(query, neteaseMusicApiRequest).then(resp => {
+                        resolve(resp);
+                    }).catch(err => {
+                        console.error(err);
+                    });
+                });
+
+                return result.body;
+            }
+        });
+
+        server.route({
+            method: 'GET',
+            path: '/netease/tracks/search',
+            handler: async (request, h) => {
+                const query = {
+                    keywords: request.query.keywords
+                };
+
+                const result = await new Promise((resolve) => {
+                    search(query, neteaseMusicApiRequest).then(resp => {
+                        resolve(resp);
+                    }).catch(err => {
+                        console.error(err);
+                    });
+                });
+
+                return result.body
+            }
+        });
+
+        server.route({
+            method: 'GET',
+            path: '/netease/playground',
+            handler: async (request, h) => {
+                netease.init(nodeCache);
+                
+                const loginResult = netease.login(request.query.phone, request.query.password);
+                return loginResult;
             }
         });
     }

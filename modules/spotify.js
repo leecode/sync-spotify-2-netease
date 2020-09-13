@@ -1,5 +1,6 @@
+const crypto = require('crypto');
+
 const spotifyConfig = require('../config/spotify');
-const SpotifyWebApi = require('spotify-web-api-node');
 
 module.exports = {
     name: 'spotify',
@@ -32,7 +33,7 @@ module.exports = {
                 if (resp.statusCode == 401) {
                     console.log('trying to grant token...');
 
-                    const state = "fakeRand";
+                    const state = crypto.randomBytes(10).toString('hex');
                     const redirectUrl = spotifyApi.createAuthorizeURL(spotifyConfig.scopes, state);
                     return h.redirect(redirectUrl);
                 }
